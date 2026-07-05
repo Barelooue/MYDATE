@@ -12,3 +12,17 @@ interface DocumentPictureInPicture {
 interface Window {
   documentPictureInPicture?: DocumentPictureInPicture
 }
+
+declare module 'netlify-identity-widget' {
+  interface NetlifyIdentity {
+    init(): void
+    open(tab?: string): void
+    close(): void
+    logout(): void
+    on(event: string, callback: (user?: unknown) => void): void
+    off(event: string, callback?: (user?: unknown) => void): void
+    currentUser(): unknown
+  }
+  const netlifyIdentity: NetlifyIdentity
+  export default netlifyIdentity
+}

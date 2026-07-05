@@ -34,12 +34,13 @@ export function LandingPage() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link
-            to="/login"
+          <button
+            id="login-btn"
+            type="button"
             className="rounded-xl border border-white/10 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/5"
           >
             Log in
-          </Link>
+          </button>
           <Link
             to="/signup"
             className="rounded-xl bg-accent-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-accent-500"

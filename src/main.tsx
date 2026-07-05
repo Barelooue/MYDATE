@@ -1,5 +1,6 @@
 import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
+import netlifyIdentity from 'netlify-identity-widget'
 import './index.css'
 import App from './App.tsx'
 import { alarmManager } from '@/services/alarm'
@@ -11,6 +12,16 @@ import { registerAlarmServiceWorker } from '@/services/alarm/registerServiceWork
 
 startWidgetSync()
 void registerAlarmServiceWorker()
+
+netlifyIdentity.init()
+
+document.addEventListener('click', (event) => {
+  const target = event.target
+  if (!(target instanceof Element)) return
+  if (!target.closest('#login-btn')) return
+  event.preventDefault()
+  netlifyIdentity.open()
+})
 
 /** Bootstrap AlarmManager + resync persisted alarms after hydration */
 function AppBootstrap() {
