@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { CalendarDays, Sparkles, Sun } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
@@ -41,12 +41,13 @@ export function LandingPage() {
           >
             Log in
           </button>
-          <Link
-            to="/signup"
+          <button
+            id="signup-btn"
+            type="button"
             className="rounded-xl bg-accent-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-accent-500"
           >
             Sign up
-          </Link>
+          </button>
         </div>
       </header>
 

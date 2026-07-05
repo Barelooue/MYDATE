@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import netlifyIdentity from 'netlify-identity-widget'
 import './index.css'
 import App from './App.tsx'
+import { setupNetlifyIdentityAuth } from '@/lib/netlifyIdentityAuth'
 import { alarmManager } from '@/services/alarm'
 import { useAppStore, resyncAllAlarms } from '@/stores/appStore'
 // 💡 引入你刚刚创建的位置上下文管理器
@@ -14,13 +15,22 @@ startWidgetSync()
 void registerAlarmServiceWorker()
 
 netlifyIdentity.init()
+setupNetlifyIdentityAuth()
 
 document.addEventListener('click', (event) => {
   const target = event.target
   if (!(target instanceof Element)) return
-  if (!target.closest('#login-btn')) return
-  event.preventDefault()
-  netlifyIdentity.open()
+
+  if (target.closest('#login-btn')) {
+    event.preventDefault()
+    netlifyIdentity.open('login')
+    return
+  }
+
+  if (target.closest('#signup-btn')) {
+    event.preventDefault()
+    netlifyIdentity.open('signup')
+  }
 })
 
 /** Bootstrap AlarmManager + resync persisted alarms after hydration */

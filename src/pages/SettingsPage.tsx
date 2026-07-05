@@ -18,7 +18,7 @@ import {
 } from 'lucide-react'
 import { useAppStore } from '@/stores/appStore'
 import { useAuthStore } from '@/stores/authStore'
-import { logoutOnServer } from '@/services/authService'
+import { logoutNetlifyIdentity } from '@/lib/netlifyIdentityAuth'
 import { checkIsAdmin } from '@/services/adminService'
 import { alarmManager } from '@/services/alarm'
 import {
@@ -85,9 +85,9 @@ export function SettingsPage() {
   async function handleLogout() {
     setLoggingOut(true)
     try {
-      await logoutOnServer(authToken)
+      logoutNetlifyIdentity()
       clearSession()
-      navigate('/login', { replace: true })
+      navigate('/', { replace: true })
     } finally {
       setLoggingOut(false)
     }
@@ -489,7 +489,7 @@ export function SettingsPage() {
         <div className="flex items-center justify-between gap-4 rounded-xl bg-white/5 p-4">
           <div>
             <p className="text-sm text-zinc-200">{authUser?.username ?? '未登录'}</p>
-            <p className="text-xs text-zinc-500">{authUser?.email ?? '邮箱验证码登录'}</p>
+            <p className="text-xs text-zinc-500">{authUser?.email ?? 'Netlify Identity 登录'}</p>
           </div>
           <button
             type="button"

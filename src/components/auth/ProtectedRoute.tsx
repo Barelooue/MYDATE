@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
-import { fetchCurrentUser } from '@/services/authService'
+import { hasValidNetlifySession, waitForNetlifyIdentityReady } from '@/lib/netlifyIdentityAuth'
 
 export function ProtectedRoute() {
   const location = useLocation()
@@ -29,9 +29,11 @@ export function ProtectedRoute() {
     }
 
     let cancelled = false
-    void fetchCurrentUser(token).then((remoteUser) => {
+    void waitForNetlifyIdentityReady().then(() => {
       if (cancelled) return
-      if (!remoteUser) clearSession()
+      if (!hasValidNetlifySession(user, token)) {
+        clearSession()
+      }
       setValidating(false)
     })
 
