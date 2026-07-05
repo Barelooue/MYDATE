@@ -5,6 +5,7 @@ import { format, isValid } from 'date-fns'
 import { zhCN } from 'date-fns/locale'
 import { Bell, Calendar, Globe, PictureInPicture2 } from 'lucide-react'
 import { Sidebar } from '@/components/layout/Sidebar'
+import { UserBadge } from '@/components/auth/UserBadge'
 import { useAppStore } from '@/stores/appStore'
 import { useAnalytics } from '@/hooks/useAnalytics'
 import { cn } from '@/lib/utils'
@@ -105,6 +106,10 @@ export function AppLayout() {
                 {widgetOpen ? '关闭桌面视图' : '桌面小组件'}
               </span>
             </button>
+
+            <div className="rounded-xl glass-panel-light px-2 py-1 sm:px-3 sm:py-1.5">
+              <UserBadge size="sm" />
+            </div>
           </div>
         </header>
 

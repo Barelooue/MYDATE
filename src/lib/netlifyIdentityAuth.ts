@@ -64,16 +64,33 @@ async function syncSession(user: NetlifyIdentityUser | null | undefined): Promis
   return true
 }
 
-async function enterAppWithCurrentUser(): Promise<boolean> {
-  const current = getNetlifyCurrentUser()
-  if (!current) return false
-
-  const ok = await syncSession(current)
-  if (!ok) return false
+export async function enterAppWithSession(): Promise<boolean> {
+  if (!useAuthStore.getState().user) {
+    const current = getNetlifyCurrentUser()
+    if (!current) return false
+    const ok = await syncSession(current)
+    if (!ok) return false
+  }
 
   netlifyIdentity.close()
   notifyAuthSuccess()
   return true
+}
+
+export function openNetlifyLogin() {
+  if (useAuthStore.getState().user) {
+    notifyAuthSuccess()
+    return
+  }
+  netlifyIdentity.open('login')
+}
+
+export function openNetlifySignup() {
+  if (useAuthStore.getState().user) {
+    notifyAuthSuccess()
+    return
+  }
+  netlifyIdentity.open('signup')
 }
 
 let identityReady = false
@@ -109,16 +126,6 @@ export function setupNetlifyIdentityAuth() {
   netlifyIdentity.on('logout', () => {
     useAuthStore.getState().clearSession()
   })
-}
-
-export async function openNetlifyLogin() {
-  if (await enterAppWithCurrentUser()) return
-  netlifyIdentity.open('login')
-}
-
-export async function openNetlifySignup() {
-  if (await enterAppWithCurrentUser()) return
-  netlifyIdentity.open('signup')
 }
 
 export function logoutNetlifyIdentity() {

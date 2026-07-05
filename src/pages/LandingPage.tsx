@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { CalendarDays, Sparkles, Sun } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
+import { UserBadge } from '@/components/auth/UserBadge'
+import { enterAppWithSession } from '@/lib/netlifyIdentityAuth'
 
 export function LandingPage() {
   const navigate = useNavigate()
@@ -17,9 +19,7 @@ export function LandingPage() {
     return useAuthStore.persist.onFinishHydration(() => setReady(true))
   }, [])
 
-  useEffect(() => {
-    if (ready && user) navigate('/app', { replace: true })
-  }, [ready, user, navigate])
+  const isLoggedIn = ready && !!user
 
   return (
     <div className="relative flex min-h-full flex-col overflow-hidden">
@@ -34,20 +34,36 @@ export function LandingPage() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <button
-            id="login-btn"
-            type="button"
-            className="rounded-xl border border-white/10 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/5"
-          >
-            Log in
-          </button>
-          <button
-            id="signup-btn"
-            type="button"
-            className="rounded-xl bg-accent-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-accent-500"
-          >
-            Sign up
-          </button>
+          {isLoggedIn ? (
+            <>
+              <UserBadge showEmail className="hidden sm:flex" />
+              <button
+                id="enter-app-btn"
+                type="button"
+                onClick={() => void enterAppWithSession().then((ok) => ok && navigate('/app'))}
+                className="rounded-xl bg-accent-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-accent-500"
+              >
+                进入应用
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                id="login-btn"
+                type="button"
+                className="rounded-xl border border-white/10 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/5"
+              >
+                Log in
+              </button>
+              <button
+                id="signup-btn"
+                type="button"
+                className="rounded-xl bg-accent-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-accent-500"
+              >
+                Sign up
+              </button>
+            </>
+          )}
         </div>
       </header>
 

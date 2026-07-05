@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAppStore } from '@/stores/appStore'
+import { UserBadge } from '@/components/auth/UserBadge'
 
 const navItems = [
   {
@@ -135,6 +136,17 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
+
+      {/* User profile */}
+      <div className="border-t border-white/5 px-3 py-3">
+        {collapsed ? (
+          <div className="flex justify-center">
+            <UserBadge avatarOnly size="sm" />
+          </div>
+        ) : (
+          <UserBadge showEmail size="sm" />
+        )}
+      </div>
 
       {/* Collapse toggle */}
       <div className="border-t border-white/5 p-3">

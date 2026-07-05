@@ -19,6 +19,7 @@ import {
 import { useAppStore } from '@/stores/appStore'
 import { useAuthStore } from '@/stores/authStore'
 import { logoutNetlifyIdentity } from '@/lib/netlifyIdentityAuth'
+import { UserBadge } from '@/components/auth/UserBadge'
 import { checkIsAdmin } from '@/services/adminService'
 import { alarmManager } from '@/services/alarm'
 import {
@@ -486,24 +487,8 @@ export function SettingsPage() {
           <User className="h-4 w-4 text-accent-400" />
           账号
         </h3>
-        <div className="flex items-center justify-between gap-4 rounded-xl bg-white/5 p-4">
-          <div>
-            <p className="text-sm text-zinc-200">{authUser?.username ?? '未登录'}</p>
-            <p className="text-xs text-zinc-500">{authUser?.email ?? 'Netlify Identity 登录'}</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => void handleLogout()}
-            disabled={loggingOut}
-            className="flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-zinc-300 transition hover:bg-white/5 disabled:opacity-50"
-          >
-            {loggingOut ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <LogOut className="h-3.5 w-3.5" />
-            )}
-            退出登录
-          </button>
+        <div className="rounded-xl bg-white/5 p-4">
+          <UserBadge showEmail />
         </div>
         {isAdmin && (
           <Link
@@ -514,6 +499,25 @@ export function SettingsPage() {
             打开管理后台（仅你可见）
           </Link>
         )}
+      </section>
+
+      <section className="rounded-2xl glass-panel p-5">
+        <button
+          type="button"
+          onClick={() => void handleLogout()}
+          disabled={loggingOut || !authUser}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 py-3.5 text-sm font-medium text-red-300 transition hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {loggingOut ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <LogOut className="h-4 w-4" />
+          )}
+          退出登录
+        </button>
+        <p className="mt-2 text-center text-[11px] text-zinc-500">
+          退出后可重新登录或注册其他账号
+        </p>
       </section>
     </div>
   )
