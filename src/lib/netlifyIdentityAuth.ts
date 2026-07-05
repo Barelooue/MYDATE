@@ -34,13 +34,46 @@ function toAuthUser(user: NetlifyIdentityUser): AuthUser {
   }
 }
 
-function syncSession(user: NetlifyIdentityUser | null | undefined) {
-  const accessToken = getAccessToken(user)
-  if (!user || !accessToken) {
+let onAuthSuccess: (() => void) | null = null
+
+export function setNetlifyAuthSuccessHandler(handler: (() => void) | null) {
+  onAuthSuccess = handler
+}
+
+function notifyAuthSuccess() {
+  onAuthSuccess?.()
+}
+
+async function syncSession(user: NetlifyIdentityUser | null | undefined): Promise<boolean> {
+  if (!user) {
     useAuthStore.getState().clearSession()
-    return
+    return false
   }
+
+  let accessToken = getAccessToken(user)
+  if (!accessToken) {
+    try {
+      accessToken = await netlifyIdentity.refresh()
+    } catch {
+      useAuthStore.getState().clearSession()
+      return false
+    }
+  }
+
   useAuthStore.getState().setSession(toAuthUser(user), accessToken)
+  return true
+}
+
+async function enterAppWithCurrentUser(): Promise<boolean> {
+  const current = getNetlifyCurrentUser()
+  if (!current) return false
+
+  const ok = await syncSession(current)
+  if (!ok) return false
+
+  netlifyIdentity.close()
+  notifyAuthSuccess()
+  return true
 }
 
 let identityReady = false
@@ -61,12 +94,16 @@ export function waitForNetlifyIdentityReady(): Promise<void> {
 
 export function setupNetlifyIdentityAuth() {
   netlifyIdentity.on('init', (user) => {
-    syncSession(user as NetlifyIdentityUser | null)
+    void syncSession(user as NetlifyIdentityUser | null)
     markIdentityReady()
   })
 
   netlifyIdentity.on('login', (user) => {
-    syncSession(user as NetlifyIdentityUser)
+    void syncSession(user as NetlifyIdentityUser).then((ok) => {
+      if (!ok) return
+      netlifyIdentity.close()
+      notifyAuthSuccess()
+    })
   })
 
   netlifyIdentity.on('logout', () => {
@@ -74,11 +111,13 @@ export function setupNetlifyIdentityAuth() {
   })
 }
 
-export function openNetlifyLogin() {
+export async function openNetlifyLogin() {
+  if (await enterAppWithCurrentUser()) return
   netlifyIdentity.open('login')
 }
 
-export function openNetlifySignup() {
+export async function openNetlifySignup() {
+  if (await enterAppWithCurrentUser()) return
   netlifyIdentity.open('signup')
 }
 
@@ -98,4 +137,8 @@ export function hasValidNetlifySession(
   const netlifyUser = getNetlifyCurrentUser()
   if (!netlifyUser) return false
   return netlifyUser.id === user.id && getAccessToken(netlifyUser) === token
+}
+
+export function isNetlifyLoggedIn(): boolean {
+  return getNetlifyCurrentUser() !== null
 }

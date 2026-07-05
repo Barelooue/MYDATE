@@ -3,6 +3,7 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { AdminRoute } from '@/components/auth/AdminRoute'
+import { NetlifyAuthBridge } from '@/components/auth/NetlifyAuthBridge'
 import { LandingPage } from '@/pages/LandingPage'
 import { LoginPage, SignUpPage } from '@/pages/auth/AuthPages'
 import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage'
@@ -14,6 +15,7 @@ import { SettingsPage } from '@/pages/SettingsPage'
 export default function App() {
   return (
     <BrowserRouter>
+      <NetlifyAuthBridge />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />

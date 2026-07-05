@@ -39,7 +39,7 @@ export function LoginPage() {
         <button
           id="login-btn"
           type="button"
-          onClick={() => openNetlifyLogin()}
+          onClick={() => void openNetlifyLogin()}
           className={actionButtonClass}
         >
           打开登录窗口
@@ -81,7 +81,7 @@ export function SignUpPage() {
         <button
           id="signup-btn"
           type="button"
-          onClick={() => openNetlifySignup()}
+          onClick={() => void openNetlifySignup()}
           className={actionButtonClass}
         >
           打开注册窗口

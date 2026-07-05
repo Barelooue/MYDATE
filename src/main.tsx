@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import netlifyIdentity from 'netlify-identity-widget'
 import './index.css'
 import App from './App.tsx'
-import { setupNetlifyIdentityAuth } from '@/lib/netlifyIdentityAuth'
+import { setupNetlifyIdentityAuth, openNetlifyLogin, openNetlifySignup } from '@/lib/netlifyIdentityAuth'
 import { alarmManager } from '@/services/alarm'
 import { useAppStore, resyncAllAlarms } from '@/stores/appStore'
 // 💡 引入你刚刚创建的位置上下文管理器
@@ -23,13 +23,13 @@ document.addEventListener('click', (event) => {
 
   if (target.closest('#login-btn')) {
     event.preventDefault()
-    netlifyIdentity.open('login')
+    void openNetlifyLogin()
     return
   }
 
   if (target.closest('#signup-btn')) {
     event.preventDefault()
-    netlifyIdentity.open('signup')
+    void openNetlifySignup()
   }
 })
 

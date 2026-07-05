@@ -19,6 +19,7 @@ declare module 'netlify-identity-widget' {
     open(tab?: string): void
     close(): void
     logout(): void
+    refresh(): Promise<string>
     on(event: string, callback: (user?: unknown) => void): void
     off(event: string, callback?: (user?: unknown) => void): void
     currentUser(): unknown
