@@ -14,8 +14,8 @@ import { registerAlarmServiceWorker } from '@/services/alarm/registerServiceWork
 startWidgetSync()
 void registerAlarmServiceWorker()
 
-netlifyIdentity.init()
 setupNetlifyIdentityAuth()
+netlifyIdentity.init()
 
 document.addEventListener('click', (event) => {
   const target = event.target

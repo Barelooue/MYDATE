@@ -9,9 +9,15 @@ export interface NetlifyIdentityUser {
     full_name?: string
     username?: string
   }
-  token?: {
+  token?: string | {
     access_token?: string
   }
+}
+
+function getAccessToken(user: NetlifyIdentityUser | null | undefined): string | null {
+  if (!user?.token) return null
+  if (typeof user.token === 'string') return user.token
+  return user.token.access_token ?? null
 }
 
 function toAuthUser(user: NetlifyIdentityUser): AuthUser {
@@ -29,7 +35,7 @@ function toAuthUser(user: NetlifyIdentityUser): AuthUser {
 }
 
 function syncSession(user: NetlifyIdentityUser | null | undefined) {
-  const accessToken = user?.token?.access_token
+  const accessToken = getAccessToken(user)
   if (!user || !accessToken) {
     useAuthStore.getState().clearSession()
     return
@@ -90,5 +96,6 @@ export function hasValidNetlifySession(
 ): boolean {
   if (!user || !token) return false
   const netlifyUser = getNetlifyCurrentUser()
-  return netlifyUser?.id === user.id && netlifyUser.token?.access_token === token
+  if (!netlifyUser) return false
+  return netlifyUser.id === user.id && getAccessToken(netlifyUser) === token
 }
