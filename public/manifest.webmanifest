@@ -1,0 +1,18 @@
+{
+  "name": "MyDate — 智能日程",
+  "short_name": "MyDate",
+  "description": "智能记事本与日程管理",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#7c3aed",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

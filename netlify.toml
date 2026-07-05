@@ -1,0 +1,18 @@
+# Netlify 部署配置
+# 文档：deploy/NETLIFY.md
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# React Router：所有前端路径回退到 index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# 说明：Netlify 无法运行 Node 认证服务。
+# 请把 API 部署到 Railway/Render，并在 Netlify 环境变量设置：
+#   VITE_API_ORIGIN = https://你的-api.railway.app
+#   VITE_QWEATHER_KEY = ...
+#   VITE_QWEATHER_PROXY_TARGET = https://xxx.qweatherapi.com
